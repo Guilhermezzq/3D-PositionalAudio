@@ -1,19 +1,29 @@
-import { OrbitControls, PositionalAudio, useGLTF } from "@react-three/drei";
-import { useState } from "react";
+import { OrbitControls, PositionalAudio, useAnimations, useGLTF } from "@react-three/drei";
+import { useEffect, useState } from "react";
 
 
-const Speaker = ({ onClick}) => {
+const Speaker = ({ onDoubleClick }) => {
 
   const speaker = useGLTF("./model/blossoming_boombox.glb");
 
 
+  const animations = useAnimations(speaker.animations, speaker.scene)
+
+  // console.log(speaker);
+  // console.log(animations);
+
+  useEffect(() => {
+    animations.actions.Animation.play();
+  }, []);
   return (
     <>
+
+
     <directionalLight />
     <ambientLight intensity={4} />
     <primitive 
     object={speaker.scene}
-    onClick={onClick}
+    onDoubleClick={onDoubleClick}
     
     />
     
@@ -21,7 +31,7 @@ const Speaker = ({ onClick}) => {
   );
 };
 
-useGLTF.preload("./model/blossoming_boombox.glb");
+
 
 
 
@@ -37,8 +47,8 @@ const Scene = () => {
   return (
     <>
     <OrbitControls />
-    {play && <PositionalAudio url="./sound/sound.mp3" autoplay loop distance={4} />}
-    <Speaker onClick={clickHandler} />
+    {play && <PositionalAudio url="./sound/KEROSENE.mp3" autoplay loop distance={2} />}
+    <Speaker onDoubleClick={clickHandler}  />
     </>
   );
 };
