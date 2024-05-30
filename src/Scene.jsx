@@ -1,38 +1,24 @@
-import { OrbitControls, PositionalAudio, useAnimations, useGLTF } from "@react-three/drei";
-import { useEffect, useState } from "react";
+import { OrbitControls, PositionalAudio, useGLTF } from "@react-three/drei";
+import React, { useState } from "react";
 
 
-const Speaker = ({ onDoubleClick }) => {
+const Speaker = ({ onClick }) => {
 
-  const speaker = useGLTF("./model/blossoming_boombox.glb");
+  const speaker = useGLTF("./model/studio.glb");
 
-
-  const animations = useAnimations(speaker.animations, speaker.scene)
-
-  // console.log(speaker);
-  // console.log(animations);
-
-  useEffect(() => {
-    animations.actions.Animation.play();
-  }, []);
-  return (
+  // Este componente não deve ser remontado quando o estado `play` mudar, então usamos React.memo
+  return React.useMemo(() => (
     <>
-
-
-    <directionalLight />
-    <ambientLight intensity={4} />
-    <primitive 
-    object={speaker.scene}
-    onDoubleClick={onDoubleClick}
-    
-    />
-    
+      <directionalLight />
+      <ambientLight intensity={4} />
+      <primitive 
+        object={speaker.scene}
+        position-y={-1}
+        onClick={onClick}
+      />
     </>
-  );
+  ), [onClick, speaker.scene]);
 };
-
-
-
 
 
 const Scene = () => {
@@ -43,14 +29,15 @@ const Scene = () => {
     setPlay(!play);
   };
 
-
   return (
     <>
-    <OrbitControls />
-    {play && <PositionalAudio url="./sound/KEROSENE.mp3" autoplay loop distance={2} />}
-    <Speaker onDoubleClick={clickHandler}  />
+      <OrbitControls />
+      {play && <PositionalAudio url="./sound/KEROSENE.mp3" autoplay loop distance={2} />}
+      <Speaker onClick={clickHandler} />
     </>
   );
 };
+
+useGLTF.preload("./model/studio.glb");
 
 export default Scene;
